@@ -1,0 +1,25 @@
+default:\
+	:tc=common:
+#---------------------------------------------------------------------
+# Configuration for gtags(1)
+# See gtags(1).
+#---------------------------------------------------------------------
+common:\
+	:skip=GPATH,GTAGS,GRTAGS,GSYMS,HTML/,HTML.pub/,html/,tags,TAGS,ID,y.tab.c,y.tab.h,.notfunction,cscope.out,.gdbinit,SCCS/,RCS/,CVS/,CVSROOT/,{arch}/,.svn/,.git/,.cvsrc,.cvsignore,.gitignore,.cvspass,.cvswrappers,.deps/,autom4te.cache/,.snprj/,.hg/,.hgignore,.hgtags,.bzr/:\
+	:langmap=c\:.c.h,yacc\:.y,asm\:.s.S,java\:.java,cpp\:.c++.cc.cpp.cxx.hxx.hpp.C.H.mm.MM.m,php\:.php.php3.phtml,lisp\:.el,python\:.py:
+
+#
+# [gtags-parser]
+#
+# This command is distributed as part of GLOBAL.
+# The %s is replaced with the path of source file.
+# You need not use --langmap=xxx option. Gtags-parser(1) get the value
+# from environment variable.
+#
+gtags:\
+	:tc=common:\
+	:GTAGS=gtags-parser -dt %s:\
+	:GRTAGS=gtags-parser -dtr %s:\
+	:GSYMS=gtags-parser -dts %s:
+
+

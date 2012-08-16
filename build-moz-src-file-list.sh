@@ -6,7 +6,7 @@ else
     LIST=$1
 fi
 
-echo "Put all .c .cpp .idl .js .m .h .hpp files into list $LIST"
+echo "Put all .c .cpp .idl .js .m .h .hpp .ipdl files into list $LIST"
 
 find . -type f \( \
     -name '*.c'-o \
@@ -15,5 +15,6 @@ find . -type f \( \
     -name '*.js' -o \
     -name '*.m' -o \
     -name '*.hpp' -o \
-    -name '*.h' \
+    -name '*.h' -o \
+    -name '*.ipdl' \
     \) > $LIST
