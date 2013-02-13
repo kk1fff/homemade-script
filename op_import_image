@@ -9,11 +9,6 @@ if [ ! -d "$TARGETBASEDIR" ]; then
     exit 255
 fi
 
-if [ ! -r "$1" ]; then
-    echo "Error: unable to get $1."
-    exit 255
-fi
-
 TARGETDIR=$TARGETBASEDIR/blogimage
 
 # Create target dir if it is not present
@@ -23,22 +18,32 @@ if [ $? -ne 0 ]; then
     exit 255
 fi
 
-# Get md5 of image.
-MD5SUM=$(md5 -q "$1")
-echo "MD5: $MD5SUM"
 
-# Get target name.
-TARGETBASENAME=$(echo ${1%.*} | sed -e 's/ /-/g')
-TARGETNAME=$TARGETBASENAME-$MD5SUM.jpg
-echo "Target file name is: $TARGETNAME"
+# Process image.
 
-# Convert to target.
-echo "Converting image..."
-convert "$1" -resize 1000x1000\> $TARGETDIR/$TARGETNAME
-if [ $? -ne 0 ]; then
-    echo "Error: convert source image to target image"
-    exit 255
-fi
+for f in "$@"; do
+    if [ ! -r "$f" ]; then
+        echo "Error: unable to get $f."
+        exit 255
+    fi
 
-# Print target url.
-echo "Target url:" /images/blogimage/$TARGETNAME
+    # Get md5 of image.
+    MD5SUM=$(md5 -q "$f")
+    # echo "MD5: $MD5SUM"
+
+    # Get target name.
+    TARGETBASENAME=$(echo ${f%.*} | sed -e 's/ /-/g')
+    TARGETNAME=$TARGETBASENAME-$MD5SUM.jpg
+    # echo "Target file name is: $TARGETNAME"
+
+    # Convert to target.
+    echo "Converting image..."
+    convert "$f" -resize 1000x1000\> $TARGETDIR/$TARGETNAME
+    if [ $? -ne 0 ]; then
+        echo "Error: convert source image to target image"
+        exit 255
+    fi
+
+    # Print target url.
+    echo "Target url:" /images/blogimage/$TARGETNAME
+done
