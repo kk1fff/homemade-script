@@ -1,0 +1,8 @@
+#!/bin/bash
+
+FILELIST=$(ls $@)
+
+for i in $FILELIST; do
+  echo "Processing $i..."
+  convert $i -resize 2000x2000\> jpeg:- > resized_$i
+done
