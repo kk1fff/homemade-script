@@ -8,3 +8,13 @@ do
         echo ""
     fi
 done
+
+while [ $(pwd -P) != "/" ]; do
+    if [ -r ".note" ]; then
+        echo "My note @$(pwd -P):"
+        sed 's/^/    /' ".note"
+        echo ""
+        break
+    fi
+    cd ..
+done
