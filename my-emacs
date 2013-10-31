@@ -1,0 +1,41 @@
+#!/usr/bin/env python3
+
+import os, subprocess, sys, signal
+
+def sigIntHandler(signal, frame):
+    print("Ctrl-c exit!")
+    sys.exit(0)
+
+def serverToLaunch(servers):
+    while True:
+        i = input("Which server do you want to launch? ")
+        if i in servers:
+            return i
+
+def main():
+    uid = os.getuid()
+    path = "/tmp/emacs{0}".format(uid)
+    servers = []
+    try:
+        for f in os.listdir(path):
+            servers.append(f)
+    except:
+        pass
+
+    if len(servers) == 0:
+        print("Emacs server has not been created")
+        return
+
+    # Decide which server to launch
+    srv = None
+    if len(servers) == 1:
+        srv = servers[0]
+    else:
+        print("All servers: {0}".format(", ".join(servers)))
+        srv = serverToLaunch(servers)
+
+    subprocess.call(['emacsclient', '-s', srv] + sys.argv[1:])
+
+if __name__ == "__main__":
+    signal.signal(signal.SIGINT, sigIntHandler)
+    main()
