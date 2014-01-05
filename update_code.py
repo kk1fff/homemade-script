@@ -14,7 +14,7 @@
 #     gitm:  should update respositery with git as a mirror
 #     b2g:   should run repo sync in the folder.
 
-import sys, os
+import sys, os, re, subprocess
 
 def update_local(loc):
     # read ".ckconf"
@@ -30,7 +30,8 @@ def update_gitm(loc):
 
 def update_b2g(loc):
     subprocess.call(["git", "pull"], cwd = loc)
-    subprocess.call([loc + "/B2G/repo", "sync"], cwd = loc)
+    subprocess.call([loc + "/repo", "sync"], cwd = loc)
+    print "Update b2g respository {0} successfully.".format(loc)
 
 func_route = {
     "local": update_local,
@@ -39,11 +40,12 @@ func_route = {
     "b2g":   update_b2g
 }
 
-def update_single(line):
+def update_single(line, base):
     # parse repository info.
-    m = re.match(r'[a-z]+\s+.+', line)
+    m = re.match(r'([a-zA-Z0-9]+)\s+(.+)', line)
     if m == None:
-        raise Exception("Cannot parse configure")
+        print "Cannot parse: \"{0}\"".format(line)
+        return
     tp = m.group(1)
     loc = m.group(2) if base == None else base + m.group(2)
     func = func_route[tp]
@@ -54,8 +56,8 @@ def update_single(line):
 
 def read_conf(conf_file, base = None):
     while True:
-        line = conf._filereadline()
-        line = l.decode('utf8')
+        line = conf_file.readline()
+        line = line.decode('utf8')
         if line == "":
             break
         line = line.strip()
